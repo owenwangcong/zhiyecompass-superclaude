@@ -1,4 +1,4 @@
-# 职业罗盘 ZhiYeCompass 🧭
+# 智业罗盘 ZhiYeCompass 🧭
 
 > 面向中国用户的AI驱动副业/创业项目推荐平台
 
@@ -9,7 +9,7 @@
 
 ## 📖 项目简介
 
-职业罗盘是一个帮助中国用户找到适合自己的副业/创业项目的智能推荐平台。通过AI驱动的个性化匹配算法，降低试错成本，提升成功概率。
+智业罗盘是一个帮助中国用户找到适合自己的副业/创业项目的智能推荐平台。通过AI驱动的个性化匹配算法，降低试错成本，提升成功概率。
 
 ### 核心特点
 
@@ -37,7 +37,7 @@
 - **状态管理**: React Context + Zustand
 
 ### 后端
-- **无服务器**: AWS Lambda + API Gateway
+- **无服务器**: AWS Lambda + API Gateway (ca-central-1)
 - **运行时**: Node.js 18+
 
 ### 数据层
@@ -46,12 +46,13 @@
 
 ### AI层
 - **主模型**: Claude 3.5 Sonnet (via AWS Bedrock)
-- **用途**: 用户画像分析、推荐理由生成、内容优化
+- **备选模型**: OpenAI GPT-4, DeepSeek (可动态切换)
+- **用途**: 用户画像分析、项目推荐生成、风险评估
 
 ### 部署
-- **前端**: Vercel
-- **后端**: AWS SAM
-- **CDN**: Cloudflare (中国访问优化)
+- **前端**: AWS EC2
+- **后端**: AWS Lambda + API Gateway
+- **CDN**: Cloudfront (中国访问优化)
 
 ## 🚀 快速开始
 
@@ -89,37 +90,38 @@ npm run dev
 # 构建生产版本
 npm run build
 
-# 部署到Vercel
-npm run deploy
+# 本地预览
+npm run start
 ```
 
 ## 📁 项目结构
 
 ```
 zhiyecompass-superclaude/
-├── app/                      # Next.js App Router页面
-│   ├── onboarding/          # 用户画像填写页
-│   ├── recommendations/     # 推荐列表页
-│   └── projects/            # 项目详情页
-├── components/              # React组件
-│   ├── ui/                 # shadcn/ui基础组件
-│   └── features/           # 业务组件
-├── lib/                     # 工具函数和配置
-│   ├── api/                # API调用封装
-│   ├── scoring/            # 推荐算法
-│   └── utils/              # 通用工具
-├── lambda/                  # AWS Lambda函数
-│   ├── userProfile/        # 用户画像处理
-│   ├── recommendations/    # 推荐引擎
-│   └── projects/           # 项目管理
-├── scripts/                 # 脚本工具
-│   └── seedProjects.ts     # 项目库初始化
-├── docs/                    # 项目文档
-│   ├── PROJECT_PLAN.md     # 完整策划书
-│   ├── PLANNING.md         # 项目规划
-│   ├── TASK.md             # 任务看板
-│   └── KNOWLEDGE.md        # 知识库
-└── CLAUDE.md               # Claude Code指南
+├── src/
+│   ├── app/                      # Next.js App Router页面
+│   │   ├── page.tsx             # 首页（用户画像表单）
+│   │   ├── recommendation/      # 单项目推荐页
+│   │   ├── history/             # 历史推荐浏览
+│   │   ├── share/               # 分享页面
+│   │   └── admin/               # 后台管理
+│   ├── components/              # React组件
+│   │   ├── ui/                 # shadcn/ui基础组件
+│   │   └── features/           # 业务组件
+│   └── lib/                     # 工具函数和配置
+│       ├── api/                # API调用封装
+│       └── utils/              # 通用工具
+├── lambda/                      # AWS Lambda函数
+│   ├── recommendation/         # LLM推荐引擎
+│   └── shared/                 # 共享代码
+├── docs/                       # 项目文档
+│   ├── PROJECT_PLAN.md        # 完整策划书
+│   ├── PLANNING.md            # 项目规划
+│   ├── TASK.md                # 任务看板
+│   └── KNOWLEDGE.md           # 知识库
+├── public/                     # 静态资源
+├── CLAUDE.md                  # Claude Code指南
+└── package.json
 ```
 
 ## 📚 文档
@@ -163,30 +165,22 @@ zhiyecompass-superclaude/
 
 ## 🎯 MVP里程碑
 
-### v0.1 (当前) - 核心推荐流程
+### v0.1 (当前) - 核心推荐流程 (2周冲刺)
 - [x] 项目初始化
 - [ ] 用户画像表单（8个核心字段）
-- [ ] 推荐引擎Lambda函数
-- [ ] 推荐列表页
-- [ ] 项目详情页
-- [ ] 项目库初始化（10个精选项目）
+- [ ] LLM推荐引擎Lambda函数
+- [ ] 单项目推荐页（含风险提示）
+- [ ] 历史推荐浏览功能
+- [ ] 推荐分享功能
+- [ ] 简单后台管理（限额配置、LLM切换）
 
-**目标**: 2周内完成，推荐准确率≥60%
+**目标**: 推荐准确率≥60%, 首屏加载<2s, LLM响应<10s
 
-### v1.0 - 用户系统
+### v1.0 - 用户系统 (+1周)
 - [ ] OAuth登录（微信/QQ）
-- [ ] 用户画像持久化
-- [ ] 收藏和历史记录
-
-### v1.1 - 运营后台
-- [ ] 项目库管理
-- [ ] 项目审核流程
-- [ ] 数据分析Dashboard
-
-### v1.2 - 社区功能
-- [ ] 用户案例分享
-- [ ] 问答社区
-- [ ] 项目众包
+- [ ] 推荐历史持久化
+- [ ] 收藏功能
+- [ ] 详细反馈机制
 
 详细迭代计划见 [PLANNING.md](./PLANNING.md)
 
@@ -195,17 +189,18 @@ zhiyecompass-superclaude/
 ### 产品指标 (MVP目标)
 - 推荐准确率: >60%
 - 用户留存率: Day 7 >30%
-- 项目详情页查看率: >80%
+- 分享率: >15%
 
 ### 技术指标
 - 首屏加载时间: <2s
-- 推荐生成时间: <3s
+- LLM响应时间: <10s
 - API成功率: >99%
+- LLM成本: <$100/月（前100用户）
 
 ### 业务指标
-- 注册用户数: 100人（MVP阶段）
-- 分享率: >15%
-- 用户反馈量: >50条/月
+- 内测用户: 10人（MVP验证）
+- 移动端完美适配: 100%
+- 无P0/P1级Bug
 
 ## ⚠️ 重要说明
 
