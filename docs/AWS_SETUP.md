@@ -1,12 +1,35 @@
 # AWS 环境配置指南
 
-本文档提供 ZhiYeCompass 项目 AWS 环境配置的完整步骤。
+## 🚀 快速开始（推荐）
+
+我们提供了完整的自动化脚本，一键部署所有AWS资源：
+
+```bash
+# 1. 配置 AWS CLI 凭证
+aws configure
+
+# 2. 运行自动化脚本（2-3分钟）
+bash scripts/aws-setup.sh
+```
+
+**📚 详细文档**:
+- **完整配置手册**: [`scripts/aws-setup-manual.md`](../scripts/aws-setup-manual.md)
+  - AWS CLI 安装和配置
+  - 前置条件检查
+  - 手动配置步骤（如不想用脚本）
+  - 验证和故障排查
+  - 成本估算 (~$55-110/月)
+  - 资源清理指南
+
+本文档提供 AWS 架构概览和核心服务说明。
+
+---
 
 ## 📋 前置要求
 
 - AWS 账号（推荐使用 ca-central-1 区域）
-- AWS CLI 已安装并配置
-- 基本的 AWS 服务使用经验
+- AWS CLI 已安装并配置 → 参考 `scripts/aws-setup-manual.md`
+- jq 工具（JSON处理） → 参考 `scripts/aws-setup-manual.md`
 
 ## 🏗️ 架构概览
 
