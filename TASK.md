@@ -18,12 +18,31 @@
   - [x] 定义核心类型 (src/lib/types/index.ts)
   - [x] 配置应用常量 (src/lib/constants/index.ts)
   - [x] 实现UUID工具函数 (src/lib/utils/uuid.ts)
-- [ ] AWS环境配置 (ca-central-1) - **下一步**
-  - [ ] 创建AWS账号和IAM用户
-  - [ ] 配置DynamoDB表（单表设计）
-  - [ ] 配置S3 Bucket（推荐结果存储）
-  - [ ] 配置Lambda函数基础架构
-  - [ ] 配置Bedrock/LLM API访问权限
+- [ ] AWS环境配置 (ca-central-1) - **配置脚本已准备** 🚀
+  - [ ] 创建AWS账号和IAM用户 → 参考 `scripts/aws-setup-manual.md`
+  - [ ] 安装AWS CLI和jq工具 → 参考 `scripts/aws-setup-manual.md` 前置条件
+  - [ ] 配置AWS CLI凭证 (`aws configure`) → 参考 `scripts/aws-setup-manual.md`
+  - [ ] 运行自动化脚本: `bash scripts/aws-setup.sh` (推荐)
+    - [x] DynamoDB表创建脚本 (单表设计，TTL，备份)
+    - [x] S3 Bucket配置脚本 (加密，CORS，生命周期)
+    - [x] IAM角色和策略脚本 (Lambda执行角色)
+    - [x] Lambda函数创建脚本 (Node.js 20.x，占位符代码)
+    - [x] API Gateway配置脚本 (REST API，/recommend端点)
+    - [x] 系统配置初始化脚本 (限额10/小时，Claude模型)
+  - [ ] 验证资源创建 → 参考 `scripts/aws-setup-manual.md` 验证安装
+  - [ ] 配置Bedrock/LLM API访问权限 → 参考 `scripts/aws-setup-manual.md` Bedrock配置
+  - [ ] 更新 `.env.local` 环境变量 → 参考 `scripts/aws-setup-manual.md` 配置环境变量
+
+**自动化脚本文件:**
+- ✅ `scripts/aws-setup.sh` - 一键部署所有AWS资源 (2-3分钟)
+- ✅ `scripts/aws-setup-manual.md` - 详细配置手册（中文）
+
+**预计成本:** ~$55-110/月 (100活跃用户)
+- DynamoDB: $1-5/月
+- S3: $0.50-2/月
+- Lambda: $0.20-1/月 (免费套餐覆盖大部分)
+- API Gateway: $0.10-0.50/月
+- Bedrock Claude: $50-100/月 (主要成本)
 - [x] Git仓库设置
   - [x] 初始化Git仓库
   - [x] 配置.gitignore
