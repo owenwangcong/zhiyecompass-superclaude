@@ -18,23 +18,23 @@
   - [x] 定义核心类型 (src/lib/types/index.ts)
   - [x] 配置应用常量 (src/lib/constants/index.ts)
   - [x] 实现UUID工具函数 (src/lib/utils/uuid.ts)
-- [ ] AWS环境配置 (ca-central-1) - **配置脚本已准备** 🚀
-  - [ ] 创建AWS账号和IAM用户 → 参考 `scripts/aws-setup-manual.md`
-  - [ ] 安装AWS CLI和jq工具 → 参考 `scripts/aws-setup-manual.md` 前置条件
-  - [ ] 配置AWS CLI凭证 (`aws configure`) → 参考 `scripts/aws-setup-manual.md`
-  - [ ] 运行自动化脚本: `bash scripts/aws-setup.sh` (推荐)
-    - [x] DynamoDB表创建脚本 (单表设计，TTL，备份)
-    - [x] S3 Bucket配置脚本 (加密，CORS，生命周期)
-    - [x] IAM角色和策略脚本 (Lambda执行角色)
-    - [x] Lambda函数创建脚本 (Node.js 20.x，占位符代码)
-    - [x] API Gateway配置脚本 (REST API，/recommend端点)
-    - [x] 系统配置初始化脚本 (限额10/小时，Claude模型)
-  - [ ] 验证资源创建 → 参考 `scripts/aws-setup-manual.md` 验证安装
-  - [ ] 配置Bedrock/LLM API访问权限 → 参考 `scripts/aws-setup-manual.md` Bedrock配置
-  - [ ] 更新 `.env.local` 环境变量 → 参考 `scripts/aws-setup-manual.md` 配置环境变量
+- [x] AWS环境配置 (ca-central-1) ✅ **已完成**
+  - [x] 创建AWS账号和IAM用户
+  - [x] 安装AWS CLI和PowerShell工具
+  - [x] 配置AWS CLI凭证 (`aws configure`)
+  - [x] 运行自动化脚本: `scripts/aws-setup.ps1`
+    - [x] DynamoDB表创建 (单表设计，TTL，备份)
+    - [x] S3 Bucket配置 (加密，CORS，生命周期)
+    - [x] IAM角色和策略 (Lambda执行角色)
+    - [x] Lambda函数创建 (Node.js 20.x，占位符代码)
+    - [x] API Gateway配置 (REST API，/recommend端点)
+    - [x] 系统配置初始化 (限额10/小时，Claude模型)
+  - [x] 验证资源创建
+  - [x] 更新 `.env.local` 环境变量
 
 **自动化脚本文件:**
-- ✅ `scripts/aws-setup.sh` - 一键部署所有AWS资源 (2-3分钟)
+- ✅ `scripts/aws-setup.ps1` - PowerShell一键部署脚本
+- ✅ `scripts/aws-cleanup.ps1` - 资源清理脚本
 - ✅ `scripts/aws-setup-manual.md` - 详细配置手册（中文）
 
 **预计成本:** ~$55-110/月 (100活跃用户)
@@ -42,7 +42,7 @@
 - S3: $0.50-2/月
 - Lambda: $0.20-1/月 (免费套餐覆盖大部分)
 - API Gateway: $0.10-0.50/月
-- Bedrock Claude: $50-100/月 (主要成本)
+- Claude API: $50-100/月 (主要成本)
 - [x] Git仓库设置
   - [x] 初始化Git仓库
   - [x] 配置.gitignore
@@ -90,7 +90,7 @@
   - [ ] **限额计数器递增**
 
 - [ ] 多LLM支持（可动态切换）
-  - [ ] Claude 3.5 Sonnet (Bedrock) - 默认
+  - [ ] Claude 3.5 Sonnet (API) - 默认
   - [ ] OpenAI GPT-4 (API)
   - [ ] DeepSeek (API)
   - [ ] 从DynamoDB读取当前LLM配置
