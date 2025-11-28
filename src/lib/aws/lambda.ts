@@ -26,6 +26,7 @@ interface LambdaResponse {
 
 /**
  * Invoke the recommendation Lambda via API Gateway
+ * Timeout set to 60 seconds to allow for LLM generation time
  */
 export async function invokeRecommendationLambda(
   params: LambdaInvokeParams
@@ -36,7 +37,14 @@ export async function invokeRecommendationLambda(
     throw new Error('API_ENDPOINT environment variable is not configured');
   }
 
-  const url = `${apiEndpoint}/recommend`;
+  // Support both API Gateway (/recommend path) and Lambda Function URL (direct)
+  // Lambda Function URL ends with .lambda-url.region.on.aws
+  const isLambdaFunctionUrl = apiEndpoint.includes('.lambda-url.');
+  const url = isLambdaFunctionUrl ? apiEndpoint : `${apiEndpoint}/recommend`;
+
+  // Create AbortController for timeout (120 seconds to match Lambda timeout)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000);
 
   try {
     const response = await fetch(url, {
@@ -45,7 +53,10 @@ export async function invokeRecommendationLambda(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(params),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     const data = await response.json();
 
@@ -76,7 +87,18 @@ export async function invokeRecommendationLambda(
       quotaRemaining: data.quotaRemaining,
     };
   } catch (error) {
+    clearTimeout(timeoutId);
     console.error('Error invoking Lambda:', error);
+
+    // Check if it's an abort/timeout error
+    if (error instanceof Error && error.name === 'AbortError') {
+      return {
+        success: false,
+        message: 'AI生成超时，请稍后重试。如持续出现此问题，可能是服务繁忙。',
+        error: 'Request timeout after 120 seconds',
+      };
+    }
+
     return {
       success: false,
       message: '网络错误，请检查网络连接后重试',

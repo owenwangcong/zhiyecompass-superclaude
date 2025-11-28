@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { saveFeedback } from '@/lib/aws/dynamodb';
 
 interface FeedbackPayload {
   recommendationId: string;
@@ -28,8 +29,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // In production, this would save to DynamoDB or S3
-    // For MVP, we'll just log and return success
     console.log('[Feedback Received]', {
       recommendationId: body.recommendationId,
       rating: body.rating,
@@ -38,15 +37,21 @@ export async function POST(request: NextRequest) {
       submittedAt: body.submittedAt,
     });
 
-    // TODO: Save to DynamoDB in production
-    // await saveFeedbackToDynamoDB(body);
+    // Save to DynamoDB
+    const feedbackId = await saveFeedback({
+      recommendationId: body.recommendationId,
+      rating: body.rating,
+      reasons: body.reasons,
+      comment: body.comment,
+      submittedAt: body.submittedAt,
+    });
 
-    // TODO: Track in analytics
-    // await trackFeedbackEvent(body);
+    console.log('[Feedback Saved]', feedbackId);
 
     return NextResponse.json({
       success: true,
       message: '反馈提交成功',
+      feedbackId,
     });
   } catch (error) {
     console.error('[Feedback API Error]', error);

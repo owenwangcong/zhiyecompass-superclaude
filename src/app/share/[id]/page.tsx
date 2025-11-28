@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -191,7 +191,6 @@ function CaseStudyCard({
 
 export default function SharePage() {
   const params = useParams();
-  const router = useRouter();
   const [recommendation, setRecommendation] = useState<ProjectRecommendation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { defaultMetadata, generateOrganizationJsonLd, generateWebsiteJsonLd } from "@/lib/seo/metadata";
 
+import { Toaster } from "@/components/ui/toaster";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -55,6 +57,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-size-adjust-100 scroll-smooth-touch safe-area-inset-x`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

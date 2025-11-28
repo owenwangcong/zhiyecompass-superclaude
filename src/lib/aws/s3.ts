@@ -108,11 +108,15 @@ function transformRiskAssessment(
     };
   }
 
-  const transformRisk = (r: Record<string, unknown> | undefined) => ({
-    level: (r?.level as string) || 'medium',
-    description: (r?.description as string) || '',
-    mitigation: (r?.mitigation as string[]) || [],
-  });
+  const transformRisk = (r: Record<string, unknown> | undefined): { level: 'low' | 'medium' | 'high'; description: string; mitigation: string[] } => {
+    const level = (r?.level as string) || 'medium';
+    const validLevel = ['low', 'medium', 'high'].includes(level) ? level as 'low' | 'medium' | 'high' : 'medium';
+    return {
+      level: validLevel,
+      description: (r?.description as string) || '',
+      mitigation: (r?.mitigation as string[]) || [],
+    };
+  };
 
   return {
     legal: transformRisk(risk.legal as Record<string, unknown>),

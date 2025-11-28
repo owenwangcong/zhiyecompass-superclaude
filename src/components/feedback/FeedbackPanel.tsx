@@ -20,7 +20,7 @@ interface FeedbackPanelProps {
 
 type FeedbackStep = 'initial' | 'rating' | 'reasons' | 'submitted';
 
-export function FeedbackPanel({ recommendationId, recommendationTitle }: FeedbackPanelProps) {
+export function FeedbackPanel({ recommendationId, recommendationTitle: _recommendationTitle }: FeedbackPanelProps) {
   const [step, setStep] = useState<FeedbackStep>('initial');
   const [rating, setRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);

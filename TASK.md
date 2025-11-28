@@ -218,25 +218,51 @@
 **新增文件:**
 - `src/app/share/[id]/page.tsx` - 分享页面（含RiskCard, RoadmapTimeline, CaseStudyCard组件）
 
-#### 7. 简单后台管理 (Day 13-14)
-- [ ] 后台认证
-  - [ ] 简单的用户名/密码认证（环境变量配置）
-  - [ ] Next-Auth集成（仅后台使用）
+#### 7. 简单后台管理 (Day 13-14) ✅ **已完成**
+- [x] 后台认证
+  - [x] 简单的用户名/密码认证（环境变量配置）
+  - [x] Session-based认证（Cookie存储，24小时有效期）
+  - [x] 登录/登出API (`/api/admin/login`, `/api/admin/logout`)
+  - [x] 认证检查API (`/api/admin/check`)
 
-- [ ] 系统配置页面 (`/admin`)
-  - [ ] **每小时推荐限额设置**（Number Input，保存到DynamoDB）
-  - [ ] **LLM模型选择**（Radio Group：Claude/GPT-4/DeepSeek）
-  - [ ] 配置保存和读取
+- [x] 系统配置页面 (`/admin`)
+  - [x] **每小时推荐限额设置**（Number Input，1-100范围）
+  - [x] **LLM模型选择**（Radio Group：Claude/GPT-4/DeepSeek）
+  - [x] 配置保存和读取（API: `/api/admin/config`）
+  - [x] 配置说明和成本估算展示
 
-- [ ] 推荐统计页面 (`/admin/stats`)
-  - [ ] 累计推荐数
-  - [ ] 今日推荐数
-  - [ ] 当前小时已推荐次数 / 限额
-  - [ ] 分享次数统计
+- [x] 推荐统计页面 (`/admin/stats`)
+  - [x] 累计推荐数
+  - [x] 今日推荐数
+  - [x] 当前小时已推荐次数 / 限额（进度条可视化）
+  - [x] 分享次数统计
+  - [x] 平均反馈评分
+  - [x] 近7天趋势图（柱状图）
+  - [x] 最近活动列表
 
-- [ ] 用户反馈查看
-  - [ ] 反馈列表（有用/无用统计）
-  - [ ] 按时间排序
+- [x] 用户反馈查看 (`/admin/feedback`)
+  - [x] 反馈列表（评分、理由、评论）
+  - [x] 按时间/评分排序
+  - [x] 分页支持
+  - [x] 评分分布统计
+
+**新增文件:**
+- `src/lib/admin/auth.ts` - 管理员认证工具函数
+- `src/app/admin/login/page.tsx` - 登录页面
+- `src/app/admin/page.tsx` - 系统配置页面
+- `src/app/admin/stats/page.tsx` - 数据统计页面
+- `src/app/admin/feedback/page.tsx` - 用户反馈页面
+- `src/app/admin/layout.tsx` - 后台布局
+- `src/app/api/admin/login/route.ts` - 登录API
+- `src/app/api/admin/logout/route.ts` - 登出API
+- `src/app/api/admin/check/route.ts` - 认证检查API
+- `src/app/api/admin/config/route.ts` - 配置管理API
+- `src/app/api/admin/stats/route.ts` - 统计数据API
+- `src/app/api/admin/feedback/route.ts` - 反馈数据API
+
+**环境变量配置:**
+- `ADMIN_USERNAME` - 管理员用户名（默认: admin）
+- `ADMIN_PASSWORD` - 管理员密码（必填）
 
 #### 8. 每小时限额控制 (集成到Lambda) ✅ **已完成**
 - [x] DynamoDB限额计数器设计
@@ -502,7 +528,7 @@ zhiyecompass-recommendations/
 - [x] 风险提示模块完整展示
 - [x] 历史推荐功能可用
 - [x] 分享功能可用
-- [ ] 后台管理功能可用（配置限额和LLM）
+- [x] 后台管理功能可用（配置限额和LLM）
 - [ ] 推荐准确率≥60%（10人内测）
 - [ ] 首屏加载<2s
 - [ ] LLM响应<10s
