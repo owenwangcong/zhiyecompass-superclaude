@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# lambda
+lambda/node_modules
+lambda/dist
+lambda/function.zip
+lambda/response*.json
+
+# playwright mcp screenshots
+.playwright-mcp/
+
+# Windows
+nul

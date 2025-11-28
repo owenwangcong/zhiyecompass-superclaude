@@ -16,11 +16,36 @@ export interface UserProfile {
   skills: string[];
   availableTimePerWeek: number;
   startupBudget: string;
+  /** 用户拥有的其他资源 */
+  otherResources?: OtherResources;
 }
+
+/** 用户可利用的其他资源 */
+export interface OtherResources {
+  /** 选中的资源类型 */
+  resourceTypes: ResourceType[];
+  /** 详细描述 */
+  description: string;
+}
+
+/** 资源类型 */
+export type ResourceType =
+  | 'connections'      // 人脉资源
+  | 'channels'         // 渠道资源
+  | 'equipment'        // 设备/物品
+  | 'property'         // 房产/场地
+  | 'vehicles'         // 车辆
+  | 'inventory'        // 库存/货源
+  | 'intellectual'     // 知识产权/专利
+  | 'other';           // 其他资源
 
 export interface ProjectRecommendation {
   id: string;
   userId: string;
+  /** AI生成的用户情况摘要 */
+  userSummary?: string;
+  /** AI推荐该项目的理由 */
+  recommendationReason?: string;
   title: string;
   summary: string;
   description: string;

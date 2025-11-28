@@ -53,131 +53,170 @@
 - aa4d9d7: feat: Initialize Next.js 14 project with shadcn/ui
 - c94a263: Initial commit: Project documentation
 
-#### 2. 用户画像表单页面 (Day 3-4)
-- [ ] 设计8个核心字段的表单组件
-  - [ ] 年龄段选择（Select）
-  - [ ] 地域选择（级联Select：省/市/城市等级）
-  - [ ] 当前状态（Radio Group）
-  - [ ] 学历（Select）
-  - [ ] 行业背景（Multi-Select）
-  - [ ] 技能选择（Multi-Select with Categories）
-  - [ ] 可用时间（Number Input + Select）
-  - [ ] 启动资金（Select）
-- [ ] UUID生成和存储
-  - [ ] 生成UUID（首次访问）
-  - [ ] 存储到Session Storage
-  - [ ] 存储到Cookie（7天有效期）
-- [ ] 集成React Hook Form + Zod校验
-  - [ ] 定义Zod Schema
-  - [ ] 表单校验规则（必填、格式验证）
-  - [ ] 错误提示优化
-- [ ] 实现单页表单（非分步）
-  - [ ] 统一页面布局
-  - [ ] 提交按钮和Loading状态
-- [ ] 数据提交到后端
-  - [ ] API Route: `/api/submit-profile` (POST)
-  - [ ] 调用Lambda生成推荐
-  - [ ] 提交后跳转推荐详情页
+#### 2. 用户画像表单页面 (Day 3-4) ✅ **已完成**
+- [x] 设计8个核心字段的表单组件
+  - [x] 年龄段选择（Select）
+  - [x] 地域选择（省份Select + 城市Input + 城市等级Select）
+  - [x] 当前状态（Radio Group）
+  - [x] 学历（Select）
+  - [x] 行业背景（Multi-Select with Checkbox）
+  - [x] 技能选择（Multi-Select with Categories）
+  - [x] 可用时间（Number Input）
+  - [x] 启动资金（Select）
+- [x] UUID生成和存储
+  - [x] 生成UUID（首次访问）
+  - [x] 存储到Session Storage
+  - [x] 存储到Cookie（7天有效期）
+- [x] 集成React Hook Form + Zod校验
+  - [x] 定义Zod Schema (src/lib/validations/profile.ts)
+  - [x] 表单校验规则（必填、格式验证）- Zod v4语法
+  - [x] 错误提示优化（中文提示）
+- [x] 实现单页表单（非分步）
+  - [x] 统一页面布局 (src/app/profile/page.tsx)
+  - [x] 提交按钮和Loading状态
+  - [x] 免责声明提示
+- [x] 数据提交到后端
+  - [x] API Route: `/api/submit-profile` (POST)
+  - [x] 调用Lambda生成推荐
+  - [x] 提交后跳转推荐详情页
+- [x] 错误处理
+  - [x] 限额超限友好提示UI
+  - [x] 通用错误提示组件
 
-#### 3. LLM推荐引擎Lambda函数 (Day 5-7)
-- [ ] 实现推荐生成Lambda
-  - [ ] 接收用户画像JSON
-  - [ ] **检查每小时限额**（从DynamoDB读取计数）
-  - [ ] **超限处理**：返回友好错误提示
-  - [ ] 调用LLM生成完整项目推荐
-  - [ ] 存储推荐结果到S3 (JSON格式)
-  - [ ] DynamoDB记录推荐ID和用户UUID关联
-  - [ ] **限额计数器递增**
+**新增文件:**
+- `src/lib/validations/profile.ts` - Zod v4验证Schema
+- `src/app/profile/page.tsx` - 用户画像表单页面
+- `src/app/api/submit-profile/route.ts` - 表单提交API
+- `src/lib/aws/lambda.ts` - Lambda调用工具
+- `src/components/ui/alert.tsx` - Alert组件
 
-- [ ] 多LLM支持（可动态切换）
-  - [ ] Claude 3.5 Sonnet (API) - 默认
-  - [ ] OpenAI GPT-4 (API)
-  - [ ] DeepSeek (API)
-  - [ ] 从DynamoDB读取当前LLM配置
+**更新文件:**
+- `src/lib/constants/index.ts` - 新增行业、技能、省份、城市等级常量
 
-- [ ] Prompt工程
-  - [ ] 设计项目生成Prompt模板
-  - [ ] 要求包含：项目描述、收益预期、启动成本、工作内容
-  - [ ] **风险评估部分**：法律、财务、平台、竞争风险 + 规避建议
-  - [ ] 行动路径（分阶段里程碑）
-  - [ ] 成功和失败案例各1个
-  - [ ] **明确禁止**：灰产、传销、诈骗、违规金融
+#### 3. LLM推荐引擎Lambda函数 (Day 5-7) ✅ **已完成**
+- [x] 实现推荐生成Lambda
+  - [x] 接收用户画像JSON
+  - [x] **检查每小时限额**（从DynamoDB读取计数）
+  - [x] **超限处理**：返回友好错误提示
+  - [x] 调用LLM生成完整项目推荐
+  - [x] 存储推荐结果到S3 (JSON格式)
+  - [x] DynamoDB记录推荐ID和用户UUID关联
+  - [x] **限额计数器递增**
 
-- [ ] 错误处理和降级策略
-  - [ ] LLM API失败：返回友好错误，建议稍后再试
-  - [ ] S3存储失败：重试3次
-  - [ ] 日志记录（CloudWatch）
+- [x] 多LLM支持（可动态切换）
+  - [x] OpenAI GPT-4o (API) - 默认
+  - [x] Anthropic Claude (API)
+  - [x] DeepSeek (API)
+  - [x] 从DynamoDB读取当前LLM配置
 
-#### 4. 单项目推荐页面 (Day 8-10)
-- [ ] 推荐详情页 (`/recommendation/:id`)
-  - [ ] 从URL参数获取推荐ID
-  - [ ] 从S3加载推荐JSON
-  - [ ] Server Component数据获取
+- [x] Prompt工程
+  - [x] 设计项目生成Prompt模板
+  - [x] 要求包含：项目描述、收益预期、启动成本、工作内容
+  - [x] **风险评估部分**：法律、财务、平台、竞争风险 + 规避建议
+  - [x] 行动路径（分阶段里程碑）
+  - [x] 成功和失败案例各1个
+  - [x] **明确禁止**：灰产、传销、诈骗、违规金融
 
-- [ ] 完整项目信息展示
-  - [ ] 项目标题和一句话描述
-  - [ ] 详细项目描述
-  - [ ] 收益预期（月收入范围、回本周期）
-  - [ ] 启动成本
-  - [ ] 日常工作内容
-  - [ ] 成功关键因素
+- [x] 错误处理和降级策略
+  - [x] LLM API失败：返回友好错误，建议稍后再试
+  - [x] S3存储失败：自动重试
+  - [x] 日志记录（CloudWatch）
 
-- [ ] **风险提示模块**（重点展示）
-  - [ ] 法律风险卡片（红色/警告色）
-  - [ ] 财务风险卡片
-  - [ ] 平台风险卡片
-  - [ ] 竞争风险卡片
-  - [ ] **风险规避建议**列表（可执行的具体措施）
+**新增文件:**
+- `lambda/src/index.ts` - Lambda主入口
+- `lambda/src/llm.ts` - 多LLM提供商集成
+- `lambda/src/types.ts` - 类型定义
+- `lambda/package.json` - Lambda依赖配置
+- `lambda/tsconfig.json` - TypeScript配置
+- `scripts/deploy-lambda.ps1` - Lambda部署脚本
+- `scripts/update-lambda-env.ps1` - Lambda环境变量更新脚本
 
-- [ ] 行动路径时间轴组件
-  - [ ] 阶段性里程碑展示（Step 1/2/3...）
-  - [ ] 每个阶段的任务列表
-  - [ ] 预计时间显示
+#### 4. 单项目推荐页面 (Day 8-10) ✅ **已完成**
+- [x] 推荐详情页 (`/recommendation/:id`)
+  - [x] 从URL参数获取推荐ID
+  - [x] 从S3加载推荐JSON（开发模式使用Mock数据）
+  - [x] Client Component数据获取
 
-- [ ] 案例展示
-  - [ ] 成功案例（可折叠）
-  - [ ] **失败案例**（默认展开，重点展示）
-  - [ ] 经验教训总结
+- [x] 完整项目信息展示
+  - [x] 项目标题和一句话描述
+  - [x] 详细项目描述
+  - [x] 收益预期（月收入范围、回本周期）
+  - [x] 启动成本
+  - [x] 日常工作内容
+  - [x] 成功关键因素
 
-- [ ] 操作按钮
-  - [ ] "重新生成推荐"按钮（生成新的不同项目）
-  - [ ] "分享"按钮
-  - [ ] "有用/无用"反馈按钮
+- [x] **风险提示模块**（重点展示）
+  - [x] 法律风险卡片（颜色按风险等级区分）
+  - [x] 财务风险卡片
+  - [x] 平台风险卡片
+  - [x] 竞争风险卡片
+  - [x] **风险规避建议**列表（可执行的具体措施）
 
-- [ ] 移动端适配
-  - [ ] 响应式布局
-  - [ ] 风险卡片堆叠显示
+- [x] 行动路径时间轴组件
+  - [x] 阶段性里程碑展示（Step 1/2/3...）
+  - [x] 每个阶段的任务列表
+  - [x] 预计时间显示（天数）
 
-#### 5. 历史推荐浏览功能 (Day 11)
-- [ ] 历史页面 (`/history`)
-  - [ ] 从Session Storage读取推荐ID列表
-  - [ ] 如果为空：提示"暂无历史推荐"
-  - [ ] 批量从S3获取推荐内容
+- [x] 案例展示
+  - [x] 成功案例（可折叠）
+  - [x] **失败案例**（默认展开，重点展示）
+  - [x] 经验教训总结
 
-- [ ] 历史推荐列表
-  - [ ] 卡片式列表展示
-  - [ ] 显示：项目标题、生成时间、简短描述
-  - [ ] 点击跳转详情页 (`/recommendation/:id`)
+- [x] 操作按钮
+  - [x] "重新生成推荐"按钮（跳转画像页）
+  - [x] "分享"按钮（复制链接）
+  - [x] "有用/无用"反馈按钮
 
-- [ ] UUID管理
-  - [ ] 每次生成推荐后，将ID追加到Session Storage列表
-  - [ ] Cookie同步（防止Session丢失）
+- [x] 移动端适配
+  - [x] 响应式布局
+  - [x] 风险卡片堆叠显示
 
-#### 6. 推荐分享功能 (Day 12)
-- [ ] 分享链接生成
-  - [ ] 分享按钮点击：复制分享链接
-  - [ ] 链接格式：`/share/:id`
-  - [ ] 提示："链接已复制，分享给好友吧！"
+**新增文件:**
+- `src/app/recommendation/[id]/page.tsx` - 推荐详情页面（含RiskCard, RoadmapTimeline, CaseStudyCard组件）
 
-- [ ] 分享页面 (`/share/:id`)
-  - [ ] 公开访问（无需UUID验证）
-  - [ ] 从S3加载推荐内容
-  - [ ] 与推荐详情页相同的展示
-  - [ ] 底部引导："生成你的专属推荐"（CTA按钮）
+#### 5. 历史推荐浏览功能 (Day 11) ✅ **已完成**
+- [x] 历史页面 (`/history`)
+  - [x] 从Session Storage读取推荐ID列表
+  - [x] 如果为空：提示"暂无历史推荐"
+  - [x] 批量从API获取推荐内容
 
-- [ ] 分享追踪
+- [x] 历史推荐列表
+  - [x] 卡片式列表展示（含加载态和错误态）
+  - [x] 显示：项目标题、生成时间、简短描述
+  - [x] 点击跳转详情页 (`/recommendation/:id`)
+
+- [x] UUID管理
+  - [x] 每次生成推荐后，将ID追加到Session Storage列表
+  - [x] 清除历史记录功能
+
+- [x] 首页改版
+  - [x] 添加导航栏（历史推荐、获取推荐）
+  - [x] Hero区域、功能介绍、使用流程
+  - [x] 底部免责声明
+
+**新增文件:**
+- `src/app/history/page.tsx` - 历史推荐页面
+- `src/app/page.tsx` - 首页改版（导航、介绍）
+
+#### 6. 推荐分享功能 (Day 12) ✅ **已完成**
+- [x] 分享链接生成
+  - [x] 分享按钮点击：复制分享链接
+  - [x] 链接格式：`/share/:id`
+  - [x] 提示："✓ 已复制链接"（按钮状态变化）
+
+- [x] 分享页面 (`/share/:id`)
+  - [x] 公开访问（无需UUID验证）
+  - [x] 从API/S3加载推荐内容
+  - [x] 与推荐详情页相同的展示
+  - [x] 顶部分享Banner提示
+  - [x] 底部引导："生成你的专属推荐"（CTA按钮）
+
+- [ ] 分享追踪（P2，可选功能）
   - [ ] 记录分享来源（可选，DynamoDB）
   - [ ] 统计分享次数
+
+**新增文件:**
+- `src/app/share/[id]/page.tsx` - 分享页面（含RiskCard, RoadmapTimeline, CaseStudyCard组件）
 
 #### 7. 简单后台管理 (Day 13-14)
 - [ ] 后台认证
@@ -199,25 +238,37 @@
   - [ ] 反馈列表（有用/无用统计）
   - [ ] 按时间排序
 
-#### 8. 每小时限额控制 (集成到Lambda)
-- [ ] DynamoDB限额计数器设计
-  - [ ] 数据结构：`QUOTA#{hour_timestamp}`
-  - [ ] 存储当前小时的推荐计数
-  - [ ] TTL自动过期（每小时重置）
+#### 8. 每小时限额控制 (集成到Lambda) ✅ **已完成**
+- [x] DynamoDB限额计数器设计
+  - [x] 数据结构：`QUOTA#{hour_timestamp}`
+  - [x] 存储当前小时的推荐计数
+  - [x] TTL自动过期（2小时后清理）
 
-- [ ] 限额检查逻辑
-  - [ ] Lambda开始时检查当前小时计数
-  - [ ] 如果 `count >= limit`：返回错误
-  - [ ] 否则：继续生成推荐并递增计数
+- [x] 限额检查逻辑
+  - [x] Lambda开始时检查当前小时计数
+  - [x] 如果 `count >= limit`：返回429错误
+  - [x] 否则：继续生成推荐并递增计数
 
-- [ ] 前端限额提示
-  - [ ] API返回限额错误时，显示友好提示
-  - [ ] "本小时推荐额度已用完（X/Y），请下一个小时再试"
-  - [ ] 显示下一个整点时间
+- [x] 前端限额提示
+  - [x] API返回限额错误时，显示友好Alert提示
+  - [x] "本小时推荐额度已用完（X/Y），请下一个小时再试"
+  - [x] 显示下一个整点时间
 
 ---
 
 ### Should Have (P1) - 重要但非阻塞
+
+- [x] 表单记忆功能 (0.5天) ✅ **已完成**
+  - [x] 用户提交表单后，保存画像数据到LocalStorage
+  - [x] 下次访问画像页面时，自动填充上次输入的数据
+  - [x] 提供"清除历史输入"按钮
+  - [x] 数据结构：`zhiyecompass_profile_cache`
+
+**新增文件:**
+- `src/lib/utils/storage.ts` - LocalStorage工具函数（保存、加载、清除缓存）
+
+**更新文件:**
+- `src/app/profile/page.tsx` - 集成表单记忆功能（自动填充、缓存提示、清除按钮）
 
 - [ ] 反馈机制优化 (1天)
   - [ ] 详细反馈表单（除了有用/无用，还可以填写原因）
@@ -440,17 +491,17 @@ zhiyecompass-recommendations/
 ## 里程碑检查点
 
 ### Week 1 结束检查点
-- [ ] 用户可以填写完整画像表单
-- [ ] LLM推荐引擎可以生成完整项目
-- [ ] 推荐结果存储到S3
-- [ ] 每小时限额控制生效
-- [ ] AWS基础设施配置完成（DynamoDB + S3 + Lambda）
+- [x] 用户可以填写完整画像表单
+- [x] LLM推荐引擎可以生成完整项目
+- [x] 推荐结果存储到S3
+- [x] 每小时限额控制生效
+- [x] AWS基础设施配置完成（DynamoDB + S3 + Lambda）
 
 ### Week 2 结束检查点（MVP上线）
-- [ ] 用户可以获得个性化推荐（单个项目）
-- [ ] 风险提示模块完整展示
-- [ ] 历史推荐功能可用
-- [ ] 分享功能可用
+- [x] 用户可以获得个性化推荐（单个项目）
+- [x] 风险提示模块完整展示
+- [x] 历史推荐功能可用
+- [x] 分享功能可用
 - [ ] 后台管理功能可用（配置限额和LLM）
 - [ ] 推荐准确率≥60%（10人内测）
 - [ ] 首屏加载<2s
