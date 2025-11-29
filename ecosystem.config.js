@@ -3,7 +3,7 @@ module.exports = {
     name: 'zhiyecompass',
     script: 'npm',
     args: 'start',
-    cwd: '/home/ubuntu/zhiyecompass',
+    cwd: '/var/www/zhiyecompass',
     instances: 'max',
     exec_mode: 'cluster',
     autorestart: true,
