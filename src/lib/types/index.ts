@@ -95,7 +95,7 @@ export interface CaseStudy {
 
 export interface SystemConfig {
   hourlyLimit: number;
-  llmModel: 'claude' | 'gpt-4' | 'deepseek';
+  llmModel: 'claude' | 'gpt-4' | 'deepseek-chat' | 'deepseek-reasoner';
   updatedAt: string;
 }
 

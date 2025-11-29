@@ -64,7 +64,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate llmModel
     if (llmModel) {
-      const validModels = ['claude', 'gpt-4', 'deepseek'];
+      const validModels = ['claude', 'gpt-4', 'deepseek-chat', 'deepseek-reasoner'];
       if (!validModels.includes(llmModel)) {
         return NextResponse.json(
           { success: false, message: '无效的LLM模型' },

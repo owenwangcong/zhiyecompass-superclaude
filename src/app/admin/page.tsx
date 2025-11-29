@@ -23,7 +23,7 @@ import {
 
 interface SystemConfig {
   hourlyLimit: number;
-  llmModel: 'claude' | 'gpt-4' | 'deepseek';
+  llmModel: 'claude' | 'gpt-4' | 'deepseek-chat' | 'deepseek-reasoner';
   updatedAt: string;
 }
 
@@ -34,7 +34,7 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [config, setConfig] = useState<SystemConfig | null>(null);
   const [hourlyLimit, setHourlyLimit] = useState('10');
-  const [llmModel, setLlmModel] = useState<'claude' | 'gpt-4' | 'deepseek'>('gpt-4');
+  const [llmModel, setLlmModel] = useState<'claude' | 'gpt-4' | 'deepseek-chat' | 'deepseek-reasoner'>('gpt-4');
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Check authentication on mount
@@ -231,10 +231,17 @@ export default function AdminPage() {
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-gray-50">
-                  <RadioGroupItem value="deepseek" id="deepseek" />
-                  <Label htmlFor="deepseek" className="flex-1 cursor-pointer">
-                    <div className="font-medium">DeepSeek</div>
-                    <div className="text-sm text-muted-foreground">国产模型，成本最低</div>
+                  <RadioGroupItem value="deepseek-chat" id="deepseek-chat" />
+                  <Label htmlFor="deepseek-chat" className="flex-1 cursor-pointer">
+                    <div className="font-medium">DeepSeek Chat</div>
+                    <div className="text-sm text-muted-foreground">通用对话模型，成本最低</div>
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-gray-50">
+                  <RadioGroupItem value="deepseek-reasoner" id="deepseek-reasoner" />
+                  <Label htmlFor="deepseek-reasoner" className="flex-1 cursor-pointer">
+                    <div className="font-medium">DeepSeek Reasoner</div>
+                    <div className="text-sm text-muted-foreground">推理模型，适合复杂分析场景</div>
                   </Label>
                 </div>
               </RadioGroup>
@@ -297,7 +304,8 @@ export default function AdminPage() {
               <ul className="list-disc list-inside mt-1 space-y-1">
                 <li><strong>GPT-4o</strong>: 默认推荐，输出质量高且成本适中</li>
                 <li><strong>Claude</strong>: 适合需要更深度分析的场景</li>
-                <li><strong>DeepSeek</strong>: 成本最低，适合高流量场景</li>
+                <li><strong>DeepSeek Chat</strong>: 通用对话模型，成本最低，适合高流量场景</li>
+                <li><strong>DeepSeek Reasoner</strong>: 推理模型，会先进行深度思考再输出，适合复杂分析</li>
               </ul>
             </div>
             <div>
@@ -305,7 +313,8 @@ export default function AdminPage() {
               <ul className="list-disc list-inside mt-1 space-y-1">
                 <li>GPT-4o: 约 $5-10</li>
                 <li>Claude: 约 $8-15</li>
-                <li>DeepSeek: 约 $1-3</li>
+                <li>DeepSeek Chat: 约 ¥1-3</li>
+                <li>DeepSeek Reasoner: 约 ¥2-5</li>
               </ul>
             </div>
           </CardContent>

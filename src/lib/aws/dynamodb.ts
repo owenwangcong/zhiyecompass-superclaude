@@ -39,7 +39,7 @@ const TABLE_NAME = process.env.DYNAMODB_TABLE || 'zhiyecompass-main';
 
 export interface DynamoDBSystemConfig {
   hourlyLimit: number;
-  llmModel: 'claude' | 'gpt-4' | 'deepseek';
+  llmModel: 'claude' | 'gpt-4' | 'deepseek-chat' | 'deepseek-reasoner';
   llmProvider: string;
   updatedAt: string;
 }
@@ -103,7 +103,7 @@ export async function updateSystemConfig(
     const provider =
       config.llmModel === 'claude'
         ? 'anthropic'
-        : config.llmModel === 'deepseek'
+        : config.llmModel?.startsWith('deepseek')
           ? 'deepseek'
           : 'openai';
     updateExpressions.push('llm_provider = :llmProvider');

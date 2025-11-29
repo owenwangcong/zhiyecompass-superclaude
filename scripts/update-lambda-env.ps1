@@ -64,16 +64,30 @@ if (-not $OpenAIKey -and -not $AnthropicKey -and -not $DeepSeekKey) {
 }
 
 # Convert to JSON string format for AWS CLI
-$envJson = $envVars | ConvertTo-Json -Compress
+# AWS CLI expects: --environment '{"Variables":{"KEY":"VALUE"}}'
+$envWrapper = @{
+    Variables = $envVars
+}
+# Use -Depth to ensure proper serialization and escape for shell
+$envJson = ($envWrapper | ConvertTo-Json -Compress -Depth 10)
 
 Write-Host ""
 Write-Host "Updating Lambda environment variables..." -ForegroundColor Yellow
+Write-Host "JSON: $envJson" -ForegroundColor Gray
 
-aws lambda update-function-configuration `
-    --function-name $LAMBDA_FUNCTION `
-    --environment "Variables=$envJson" `
-    --region $REGION `
-    --no-cli-pager
+# Use file-based approach to avoid shell escaping issues
+$tempFile = [System.IO.Path]::GetTempFileName()
+$envJson | Out-File -FilePath $tempFile -Encoding UTF8 -NoNewline
+
+try {
+    aws lambda update-function-configuration `
+        --function-name $LAMBDA_FUNCTION `
+        --environment "file://$tempFile" `
+        --region $REGION `
+        --no-cli-pager
+} finally {
+    Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
+}
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
