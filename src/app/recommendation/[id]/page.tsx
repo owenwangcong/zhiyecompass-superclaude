@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SkeletonRecommendation } from '@/components/ui/skeleton';
 import { FeedbackPanel } from '@/components/feedback/FeedbackPanel';
+import { SharePanel, ShareModal, FloatingShareButton } from '@/components/share/SharePanel';
 import type { ProjectRecommendation } from '@/lib/types';
 
 function RiskCard({
@@ -198,7 +199,12 @@ export default function RecommendationPage() {
   const [recommendation, setRecommendation] = useState<ProjectRecommendation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  // 二维码显示当前推荐页面的URL，用户扫码后可直接查看
+  const shareUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/recommendation/${params.id}`
+    : '';
 
   useEffect(() => {
     const fetchRecommendation = async () => {
@@ -225,17 +231,6 @@ export default function RecommendationPage() {
       fetchRecommendation();
     }
   }, [params.id]);
-
-  const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/share/${params.id}`;
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
-    }
-  };
 
   const handleRegenerate = () => {
     router.push('/profile');
@@ -271,12 +266,24 @@ export default function RecommendationPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-8 px-4">
       <div className="mx-auto max-w-3xl">
-        {/* Header */}
+        {/* Header with Share Button */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 text-sm text-zinc-500 mb-2">
-            <span>智业罗盘</span>
-            <span>•</span>
-            <span>AI推荐结果</span>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-sm text-zinc-500">
+              <span>智业罗盘</span>
+              <span>•</span>
+              <span>AI推荐结果</span>
+            </div>
+            {/* Top Share Button - Compact */}
+            <Button
+              onClick={() => setShowShareModal(true)}
+              size="sm"
+              variant="outline"
+              className="min-h-[36px] mobile-active no-tap-highlight flex items-center gap-1"
+            >
+              <span>📤</span>
+              <span className="hidden sm:inline">分享</span>
+            </Button>
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-50">
             {recommendation.title}
@@ -421,21 +428,25 @@ export default function RecommendationPage() {
           <CaseStudyCard caseStudy={recommendation.successCase} type="success" />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        {/* Action Button - Regenerate */}
+        <div className="mb-6">
           <Button
             onClick={handleRegenerate}
             variant="outline"
-            className="flex-1 min-h-[48px] text-base mobile-active no-tap-highlight"
+            className="w-full min-h-[48px] text-base mobile-active no-tap-highlight"
           >
             🔄 重新生成推荐
           </Button>
-          <Button
-            onClick={handleShare}
-            className="flex-1 min-h-[48px] text-base mobile-active no-tap-highlight"
-          >
-            {copied ? '✓ 已复制链接' : '📤 分享给好友'}
-          </Button>
+        </div>
+
+        {/* Share Panel - QR Code Focused */}
+        <div className="mb-6">
+          <SharePanel
+            shareUrl={shareUrl}
+            title={recommendation.title}
+            summary={recommendation.summary}
+            variant="full"
+          />
         </div>
 
         {/* Feedback */}
@@ -455,6 +466,21 @@ export default function RecommendationPage() {
           </p>
         </div>
       </div>
+
+      {/* Floating Share Button for Mobile */}
+      <FloatingShareButton
+        onClick={() => setShowShareModal(true)}
+        className="md:hidden"
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        shareUrl={shareUrl}
+        title={recommendation.title}
+        summary={recommendation.summary}
+      />
     </div>
   );
 }

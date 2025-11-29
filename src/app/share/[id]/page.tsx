@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { SharePanel, ShareModal, FloatingShareButton } from '@/components/share/SharePanel';
 import type { ProjectRecommendation } from '@/lib/types';
 
 function RiskCard({
@@ -194,6 +195,11 @@ export default function SharePage() {
   const [recommendation, setRecommendation] = useState<ProjectRecommendation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const shareUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/share/${params.id}`
+    : '';
 
   useEffect(() => {
     const fetchRecommendation = async () => {
@@ -249,13 +255,31 @@ export default function SharePage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Share Banner */}
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 text-center">
-        <p className="text-sm">
-          🎯 这是朋友分享给你的AI副业推荐 |{' '}
-          <Link href="/profile" className="underline font-medium">
-            生成我的专属推荐
-          </Link>
-        </p>
+      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4">
+        <div className="flex items-center justify-between max-w-3xl mx-auto">
+          <p className="text-sm flex-1">
+            🎯 这是朋友分享给你的AI副业推荐
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setShowShareModal(true)}
+              size="sm"
+              variant="secondary"
+              className="min-h-[32px] text-xs bg-white/20 hover:bg-white/30 text-white border-white/30"
+            >
+              📤 再分享
+            </Button>
+            <Link href="/profile">
+              <Button
+                size="sm"
+                variant="secondary"
+                className="min-h-[32px] text-xs bg-white hover:bg-white/90 text-blue-600"
+              >
+                🎯 生成我的
+              </Button>
+            </Link>
+          </div>
+        </div>
       </div>
 
       <div className="py-8 px-4">
@@ -381,6 +405,16 @@ export default function SharePage() {
             <CaseStudyCard caseStudy={recommendation.successCase} type="success" />
           </div>
 
+          {/* Share Panel - QR Code Focused */}
+          <div className="mb-6">
+            <SharePanel
+              shareUrl={shareUrl}
+              title={recommendation.title}
+              summary={recommendation.summary}
+              variant="full"
+            />
+          </div>
+
           {/* CTA - Get Your Own Recommendation */}
           <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
             <div className="text-center">
@@ -416,6 +450,21 @@ export default function SharePage() {
           </div>
         </div>
       </div>
+
+      {/* Floating Share Button for Mobile */}
+      <FloatingShareButton
+        onClick={() => setShowShareModal(true)}
+        className="md:hidden"
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        shareUrl={shareUrl}
+        title={recommendation.title}
+        summary={recommendation.summary}
+      />
     </div>
   );
 }
