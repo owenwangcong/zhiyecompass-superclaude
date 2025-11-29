@@ -24,151 +24,49 @@ sudo chown -R ubuntu:ubuntu /var/www/zhiyecompass
 # Navigate to web directory
 cd /var/www
 
-# Clone the repository
-git clone https://github.com/yourusername/zhiyecompass-superclaude.git zhiyecompass
+# Clone the repository (HTTPS - works for public repos)
+sudo git clone https://github.com/owenwangcong/zhiyecompass-superclaude.git zhiyecompass
 
-# Or with SSH
-git clone git@github.com:yourusername/zhiyecompass-superclaude.git zhiyecompass
+# Set ownership
+sudo chown -R ubuntu:ubuntu /var/www/zhiyecompass
 
 cd /var/www/zhiyecompass
 ```
 
-## First Time Deployment
+## Deployment Scripts
+
+All scripts are located in `/var/www/zhiyecompass/scripts/`:
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `first-deploy.sh` | Initial setup & start | `bash scripts/first-deploy.sh` |
+| `deploy.sh` | Pull & deploy (zero-downtime) | `bash scripts/deploy.sh` |
+| `restart.sh` | Quick restart (no rebuild) | `bash scripts/restart.sh` |
+| `rebuild.sh` | Full rebuild & restart | `bash scripts/rebuild.sh` |
+
+### First Time Deployment
 
 ```bash
-#!/bin/bash
-# Run: bash -c "$(curl -fsSL https://raw.githubusercontent.com/.../first-deploy.sh)"
-# Or save as: /var/www/zhiyecompass/scripts/first-deploy.sh
-
-set -e
-
-echo "=== ZhiYeCompass First Time Deployment ==="
-
 cd /var/www/zhiyecompass
-
-# 1. Install dependencies
-echo "1. Installing dependencies..."
-npm install
-
-# 2. Create logs directory
-echo "2. Creating logs directory..."
-mkdir -p logs
-
-# 3. Copy environment file (edit with actual values)
-echo "3. Setting up environment..."
-if [ ! -f .env.local ]; then
-    cp .env.example .env.local
-    echo "⚠️  Please edit .env.local with your actual values!"
-    echo "   nano /var/www/zhiyecompass/.env.local"
-fi
-
-# 4. Build application
-echo "4. Building application..."
-npm run build
-
-# 5. Start with PM2
-echo "5. Starting PM2..."
-pm2 start ecosystem.config.js
-
-# 6. Setup PM2 startup on boot
-echo "6. Setting up PM2 startup..."
-pm2 startup systemd -u ubuntu --hp /home/ubuntu
-pm2 save
-
-echo ""
-echo "=== First Time Deployment Complete ==="
-pm2 list
-echo ""
-echo "Next steps:"
-echo "  1. Edit .env.local with your AWS credentials"
-echo "  2. Configure Nginx reverse proxy (optional)"
-echo "  3. Setup SSL with Certbot (optional)"
+bash scripts/first-deploy.sh
 ```
 
-## Update from Repository (Zero-Downtime)
+### Update from Repository (Zero-Downtime)
 
 ```bash
-#!/bin/bash
-# Save as: /var/www/zhiyecompass/scripts/deploy.sh
-
-set -e
-
-echo "=== ZhiYeCompass Deployment ==="
-echo "Started at: $(date)"
-
-cd /var/www/zhiyecompass
-
-# 1. Pull latest code
-echo "1. Pulling latest code..."
-git fetch origin
-git reset --hard origin/main
-
-# 2. Install/update dependencies
-echo "2. Installing dependencies..."
-npm install
-
-# 3. Build application
-echo "3. Building application..."
-npm run build
-
-# 4. Reload PM2 (zero-downtime)
-echo "4. Reloading PM2 (zero-downtime)..."
-pm2 reload zhiyecompass
-
-# 5. Save PM2 state
-echo "5. Saving PM2 state..."
-pm2 save
-
-echo ""
-echo "=== Deployment Complete ==="
-echo "Finished at: $(date)"
-pm2 list
+bash scripts/deploy.sh
 ```
 
-## Quick Restart (No Rebuild)
+### Quick Restart (No Rebuild)
 
 ```bash
-#!/bin/bash
-# Save as: /var/www/zhiyecompass/scripts/restart.sh
-
-set -e
-
-echo "=== Quick Restart ==="
-cd /var/www/zhiyecompass
-
-# Reload with zero-downtime
-pm2 reload zhiyecompass
-
-echo "=== Restart Complete ==="
-pm2 list
+bash scripts/restart.sh
 ```
 
-## Full Restart (With Rebuild)
+### Full Rebuild & Restart
 
 ```bash
-#!/bin/bash
-# Save as: /var/www/zhiyecompass/scripts/rebuild.sh
-
-set -e
-
-echo "=== Full Rebuild & Restart ==="
-cd /var/www/zhiyecompass
-
-# Clean and rebuild
-echo "1. Cleaning old build..."
-rm -rf .next
-
-echo "2. Installing dependencies..."
-npm install
-
-echo "3. Building..."
-npm run build
-
-echo "4. Reloading PM2..."
-pm2 reload zhiyecompass
-
-echo "=== Rebuild Complete ==="
-pm2 list
+bash scripts/rebuild.sh
 ```
 
 ## PM2 Process Management
@@ -378,7 +276,8 @@ Reload: `source ~/.bashrc`
 |--------|---------|
 | First deploy | `bash scripts/first-deploy.sh` |
 | Update & deploy | `bash scripts/deploy.sh` |
-| Quick restart | `pm2 reload zhiyecompass` |
+| Quick restart | `bash scripts/restart.sh` |
+| Full rebuild | `bash scripts/rebuild.sh` |
 | View logs | `pm2 logs zhiyecompass` |
 | Monitor | `pm2 monit` |
 | Status | `pm2 list` |
